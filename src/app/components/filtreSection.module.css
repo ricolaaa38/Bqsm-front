@@ -1,0 +1,65 @@
+#filtreSection {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 75px;
+  padding: 5px;
+  gap: 3px;
+  background-color: rgb(100, 100, 100);
+}
+
+#filtreSection span {
+  width: 50px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transform: scale(1.2);
+}
+
+#filtreSection span:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.labelFilterActive, .selectFilter, .labelFilter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 8%;
+  background-color: rgb(110, 110, 110);
+  color: white;
+  gap: 5px;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+}
+
+.labelFilter:hover, .labelFilterActive:hover, .selectFilter:hover {
+  cursor: pointer;
+  background-color: rgb(130, 130, 130);
+}
+
+.labelFilterActive input {
+  width: 95%;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.labelFilter input{
+ position: absolute;
+ height: 0;
+ border: none;
+ overflow: hidden;
+ margin: 0;
+ padding: 0;
+ opacity: 0;
+}
+
