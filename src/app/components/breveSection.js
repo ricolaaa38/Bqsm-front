@@ -3,6 +3,7 @@
 import styles from "./breveSection.module.css";
 import { useData } from "../context/DataContext";
 import { useCallback, useRef } from "react";
+import BreveCard from "./breveCard";
 
 export default function BreveSection() {
   const { breves, loadMoreBreves, hasMore } = useData();
@@ -24,20 +25,22 @@ export default function BreveSection() {
   console.log(breves);
   return (
     <section id={styles.breveSection}>
+      <div className={styles.breveSectionTitle}>
+        <h4>Résumé des brèves</h4>
+        <p>Nombre breves : {breves.totalElements}</p>
+      </div>
       <div className={styles.brevesCards}>
         {breves.content?.map((item, index) => {
           if (index === breves.content.length - 1) {
             return (
-              <p ref={lastBreveRef} key={`${index}.${item.id}`}>
-                {item.date}, {item.titre}
-              </p>
+              <BreveCard
+                ref={lastBreveRef}
+                key={`${index}.${item.id}`}
+                item={item}
+              />
             );
           } else {
-            return (
-              <p key={`${index}.${item.id}`}>
-                {item.date}, {item.titre}
-              </p>
-            );
+            return <BreveCard key={`${index}.${item.id}`} item={item} />;
           }
         })}
       </div>
