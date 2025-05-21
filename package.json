@@ -13,6 +13,8 @@
     "next": "15.3.2",
     "ol": "^10.5.0",
     "react": "^19.0.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
     "react-flatpickr": "^4.0.10"
   },

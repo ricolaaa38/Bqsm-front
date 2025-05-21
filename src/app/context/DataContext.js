@@ -11,6 +11,7 @@ export function DataProvider({ children }) {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [activeFilters, setActiveFilters] = useState({});
+  const [userRole, setUserRole] = useState("admin");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +35,7 @@ export function DataProvider({ children }) {
       const nextPage = page + 1;
       const brevesData = await getAllBreves(nextPage, 10, activeFilters);
       setBreves((prevBreves) => ({
-        ...prevBreves,
+        ...brevesData,
         content: [...prevBreves.content, ...brevesData.content],
       }));
       setPage(nextPage);
@@ -56,6 +57,7 @@ export function DataProvider({ children }) {
         hasMore,
         activeFilters,
         setActiveFilters,
+        userRole,
       }}
     >
       {children}

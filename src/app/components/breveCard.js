@@ -1,23 +1,8 @@
-import { forwardRef } from "react";
-import Link from "next/link";
+import { forwardRef, useState } from "react";
 import styles from "./breveCard.module.css";
+import { getIconByCategorie } from "../lib/iconSelector";
 
-function BreveCard({ item }, ref) {
-  function getIconByCategorie(categorie) {
-    switch (categorie) {
-      case "Peche":
-        return "phishing";
-      case "Piraterie":
-        return "skull";
-      case "Drogue":
-        return "cannabis";
-      case "Terrorisme":
-        return "bomb";
-      default:
-        return "info";
-    }
-  }
-
+function BreveCard({ item, onOpenDetails, onFocusOnMap }, ref) {
   return (
     <section className={styles.breveCard}>
       <div className={styles.breveCardBody}>
@@ -39,14 +24,14 @@ function BreveCard({ item }, ref) {
         </div>
       </div>
       <div className={styles.breveCardButton}>
-        <Link href="#">
+        <button onClick={onOpenDetails}>
           <span className="material-symbols-outlined">visibility</span>lire la
           breve
-        </Link>
-        <Link href="#">
+        </button>
+        <button onClick={onFocusOnMap}>
           <span className="material-symbols-outlined">location_on</span>Voir sur
           la carte
-        </Link>
+        </button>
       </div>
     </section>
   );

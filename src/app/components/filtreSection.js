@@ -123,6 +123,7 @@ export default function FiltreSection() {
           <option value="" disabled>
             {category.label}
           </option>
+          <option value=""></option>
           {filters
             .filter((item) => item.categorie === category.id)
             .map((item, index) => (

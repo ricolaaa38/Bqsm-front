@@ -1,0 +1,34 @@
+.filesArborescenceSection {
+  padding: 20px;
+}
+
+.folderTree {
+  margin-top: 20px;
+}
+
+.folderItem {
+  margin-bottom: 10px;
+}
+
+.folderName {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.children {
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
+.childFolder {
+  margin-bottom: 5px;
+}
+
+.childFile {
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.error {
+  color: red;
+}

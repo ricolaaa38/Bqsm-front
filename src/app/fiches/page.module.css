@@ -6,3 +6,23 @@
     width: 100%;
     height: 100%;
 }
+
+.bodyFichesAnalysepage {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    gap: 5px;
+    border: 5px solid black;
+    background-color: black;
+}
+.arborescence {
+    width: 30%;
+    background-color: white;
+}
+.filesPdfViewerSection {
+    width: 70%;
+    background-color: white;
+}
