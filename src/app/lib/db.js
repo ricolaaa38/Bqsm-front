@@ -225,9 +225,12 @@ export async function updateDossier(dossier) {
 
 export async function deleteFolder(id) {
   try {
-    const response = await fetch(`/api/arborescence/delete-folder?id=${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `http://localhost:8080/api/arborescence/delete-folder?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText);
@@ -290,9 +293,12 @@ export async function updateFile(parentId, name, file) {
 
 export async function deleteFile(id) {
   try {
-    const response = await fetch(`/api/arborescence/delete-file?id=${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `http://localhost:8080/api/arborescence/delete-file?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(errorText);
