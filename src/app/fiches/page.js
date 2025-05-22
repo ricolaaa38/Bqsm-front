@@ -27,7 +27,7 @@ export default function Fiches() {
         </DndProvider>
         <div className={styles.filesPdfViewerSection}>
           {selectedFileForViewing !== null ? (
-            <PdfViewer fileBase64={selectedFileForViewing.file} />
+            <PdfViewer base64Data={selectedFileForViewing} />
           ) : (
             <p>Veuillez sélectionner un fichier à visualiser</p>
           )}
