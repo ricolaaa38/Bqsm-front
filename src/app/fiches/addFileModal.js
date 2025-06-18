@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import styles from "./addFileModal.module.css"; // Adaptez vos styles
+import styles from "./addFileModal.module.css";
 
 export default function AddFileModal({ defaultParent, onCreate, onClose }) {
   const [fileName, setFileName] = useState("");
@@ -9,7 +9,6 @@ export default function AddFileModal({ defaultParent, onCreate, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Vous pouvez ajouter ici des validations, par exemple vérifier que selectedFile n'est pas null
     if (!selectedFile) return;
     onCreate({
       name: fileName,

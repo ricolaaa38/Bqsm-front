@@ -378,3 +378,26 @@ export async function getAllFiles() {
     throw error;
   }
 }
+
+export async function getOneFile(fileId) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/arborescence/get-file/${fileId}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    const blob = await response.blob();
+    return blob;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des enfants :",
+      error.message
+    );
+    throw error;
+  }
+}

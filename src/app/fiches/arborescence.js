@@ -9,6 +9,7 @@ import {
   addNewFile,
   deleteFile,
   deleteFolder,
+  getOneFile,
 } from "../lib/db";
 import AddFolderModal from "./addFolderModal";
 import AddFileModal from "./addFileModal";
@@ -187,7 +188,7 @@ export default function Arborescence({ setSelectedFileForViewing }) {
                   <div
                     key={file.id}
                     className={styles.childFile}
-                    onClick={() => setSelectedFileForViewing(file)}
+                    onClick={() => handleFileClick(file)}
                   >
                     <span className="material-symbols-outlined">
                       picture_as_pdf
@@ -254,6 +255,17 @@ export default function Arborescence({ setSelectedFileForViewing }) {
     } catch (err) {
       console.error("Erreur lors de la création du fichier :", err);
       setError(err.message);
+    }
+  };
+
+  const handleFileClick = async (file) => {
+    try {
+      const blob = await getOneFile(file.id);
+      const fileUrl = URL.createObjectURL(blob);
+      setSelectedFileForViewing(fileUrl);
+      console.log("response", fileUrl);
+    } catch (error) {
+      console.error("Erreur lors de la récupération du fichier PDF :", error);
     }
   };
 

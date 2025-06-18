@@ -20,14 +20,14 @@ export default function Fiches() {
           <div className={styles.arborescence}>
             <Arborescence
               setSelectedFileForViewing={(file) =>
-                setSelectedFileForViewing(file.file)
+                setSelectedFileForViewing(file)
               }
             />
           </div>
         </DndProvider>
         <div className={styles.filesPdfViewerSection}>
           {selectedFileForViewing !== null ? (
-            <PdfViewer base64Data={selectedFileForViewing} />
+            <PdfViewer fileUrl={selectedFileForViewing} />
           ) : (
             <p>Veuillez sélectionner un fichier à visualiser</p>
           )}
