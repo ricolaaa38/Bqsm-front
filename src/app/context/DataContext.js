@@ -11,6 +11,7 @@ export function DataProvider({ children }) {
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [activeFilters, setActiveFilters] = useState({});
+  const [needRefresh, setNeedRefresh] = useState(false);
   const [userRole, setUserRole] = useState("admin");
 
   useEffect(() => {
@@ -22,13 +23,14 @@ export function DataProvider({ children }) {
         setFilters(filtersData || []);
         setBreves(brevesData || { content: [] });
         setHasMore(!brevesData.last);
+        setNeedRefresh(false);
         setPage(0);
       } catch (error) {
         console.error("Erreur lors de la récuperation des données", error);
       }
     };
     fetchData();
-  }, [activeFilters]);
+  }, [activeFilters, needRefresh]);
 
   const loadMoreBreves = async () => {
     try {
@@ -58,6 +60,7 @@ export function DataProvider({ children }) {
         activeFilters,
         setActiveFilters,
         userRole,
+        setNeedRefresh,
       }}
     >
       {children}

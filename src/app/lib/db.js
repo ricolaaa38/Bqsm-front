@@ -14,6 +14,63 @@ export async function getFiltres() {
   }
 }
 
+export async function addFiltres(filtre) {
+  try {
+    const response = await fetch("http://localhost:8080/api/filtres/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filtre),
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error("Erreur lors de l'ajout du filtre");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la requête d'ajout du filtre", error);
+  }
+}
+
+export async function updateFiltres(filtre) {
+  try {
+    const response = await fetch("http://localhost:8080/api/filtres/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filtre),
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error("Erreur lors de la mise à jour du filtre");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la requête de mise à jour du filtre", error);
+  }
+}
+
+export async function deleteFiltres(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/filtres/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (response.ok) {
+      return await response.text();
+    } else {
+      console.error("Erreur lors de la suppression du filtre");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la requête de suppression du filtre", error);
+    return "Erreur lors de la suppression du filtre";
+  }
+}
+
 export async function getBreveById(id) {
   try {
     const response = await fetch(

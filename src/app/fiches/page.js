@@ -11,7 +11,6 @@ import { useState } from "react";
 
 export default function Fiches() {
   const [selectedFileForViewing, setSelectedFileForViewing] = useState(null);
-  console.log(selectedFileForViewing);
   return (
     <div id={styles.fichesPage}>
       <Header />

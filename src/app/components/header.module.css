@@ -54,3 +54,9 @@
     transform: scale(1.1);
     opacity: 1;
 }
+
+#header nav .active {
+    transform: scale(1.1);
+    opacity: 1;
+    color: blue;
+}
