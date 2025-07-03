@@ -12,6 +12,7 @@ import {
   getIconByIntervenant,
   getIconByContributeur,
 } from "../lib/iconSelector";
+import UpdateBreveSection from "./updateBreve";
 import styles from "./breveDetails.module.css";
 import Image from "next/image";
 
@@ -25,11 +26,12 @@ export default function BreveDetails({
 }) {
   if (!breve) return null;
 
-  const { userRole } = useData();
+  const { userRole, needRefresh } = useData();
   const [pictures, setPictures] = useState([]);
   const [current, setCurrent] = useState(0);
   const [intervenants, setIntervenants] = useState([]);
   const [contributeurs, setContributeurs] = useState([]);
+  const [openUpdateBreve, setOpenUpdateBreve] = useState(false);
 
   function nextPic() {
     setCurrent((c) => (c < pictures.length - 1 ? c + 1 : 0));
@@ -45,7 +47,9 @@ export default function BreveDetails({
       getPicturesByBreveId(breve.id).then(setPictures);
       setCurrent(0);
     }
-  }, [breve]);
+  }, [breve, needRefresh]);
+
+  console.log(openUpdateBreve);
 
   return (
     <div className={styles.modalOverlay}>
@@ -60,7 +64,10 @@ export default function BreveDetails({
             </button>
           </div>
           {userRole === "admin" ? (
-            <button title="modifier">
+            <button
+              title="modifier"
+              onClick={() => setOpenUpdateBreve(!openUpdateBreve)}
+            >
               <span className="material-symbols-outlined">edit_square</span>
             </button>
           ) : (
@@ -173,6 +180,27 @@ export default function BreveDetails({
           </div>
         </div>
       </div>
+      {openUpdateBreve && (
+        <div className={styles.updateBreveModalContent}>
+          <div className={styles.updateBreveHeader}>
+            <button onClick={() => setOpenUpdateBreve(!openUpdateBreve)}>
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h3>Modifier BQSM - {breve.bqsmNumb}</h3>
+            <button onClick={closeBreveDetails} title="fermer">
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <div className={styles.updateBreveSection}>
+            <UpdateBreveSection
+              brevePreviousInfo={breve}
+              previousPictures={pictures}
+              previousIntervenants={intervenants}
+              previousContributeurs={contributeurs}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

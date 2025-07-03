@@ -247,7 +247,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #ff5e5e;
+  background: black;
   color: white;
   border: none;
   pointer-events: auto;
@@ -256,6 +256,9 @@
   align-items: center;
   opacity: 0;
   transform: scale(0.2) translate(0, 0);
+}
+.fabMenu .fabItem:hover{
+  background-color: #ff5e5e;
 }
 .closing .fabItem:nth-child(1) {
   opacity: 1;

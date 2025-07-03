@@ -60,6 +60,7 @@ export function DataProvider({ children }) {
         activeFilters,
         setActiveFilters,
         userRole,
+        needRefresh,
         setNeedRefresh,
       }}
     >

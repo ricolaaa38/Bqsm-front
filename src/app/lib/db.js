@@ -90,6 +90,33 @@ export async function getBreveById(id) {
   }
 }
 
+export async function updateBreveById(id, updatedBreve) {
+  console.log("Payload envoyé :", JSON.stringify(updatedBreve, null, 2));
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/breves/update?id=${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedBreve),
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Erreur de mise à jour :", response.status);
+      return null;
+    }
+  } catch (error) {
+    console.error("Erreur réseau :", error);
+    return null;
+  }
+}
+
 export async function getAllBreves(page = 0, size = 10, filters = {}) {
   try {
     const queryParams = new URLSearchParams({
@@ -173,6 +200,29 @@ export async function getPicturesByBreveId(breveId) {
   }
 }
 
+export async function addPictureForBreve(name, id, file) {
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("breveId", id);
+  formData.append("imageFile", file);
+  try {
+    const response = await fetch(`http://localhost:8080/api/pictures/create`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erreur ${response.status}: ${errorText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de la photo: ", error.message);
+    throw error;
+  }
+}
+
 export async function getIntervenantsByBreveId(breveId) {
   try {
     const response = await fetch(
@@ -189,6 +239,24 @@ export async function getIntervenantsByBreveId(breveId) {
   } catch (error) {
     console.error("Erreur lors de la requête", error);
     return [];
+  }
+}
+export async function addIntervenantForBreve(id, name) {
+  try {
+    const params = new URLSearchParams({ id, name });
+    const url = `http://localhost:8080/api/intervenants/create?${params}`;
+
+    const response = await fetch(url, { method: "POST" });
+    if (!response.ok) {
+      console.error(
+        "Erreur lors de la création de l'intervenant :",
+        response.status
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Erreur réseau lors de l'ajout de l'intervenant: ", error);
+    return null;
   }
 }
 
