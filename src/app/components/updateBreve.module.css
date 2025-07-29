@@ -79,6 +79,7 @@
   background-color: black;
   border-radius: 3px;
   overflow: hidden;
+  position: relative;
 }
 
 .pictureCard img {
@@ -122,6 +123,7 @@
   border: none;
   background-color: black;
   cursor: pointer;
+  color: white;
 }
 
 .closeAddNewPictureFormBtn:hover span {
@@ -130,28 +132,78 @@
 
 .updateIntervenants, .updateContributeurs {
     width: 100%;
-    height: 10%;
+    height: 12%;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     overflow-x: auto;
     gap: 15px;
+    padding-bottom: 10px;
 }
-
 .intervenantCard, .contributeurCard {
     background-color: black;
     border-radius: 50%;
+    flex: 0 0 auto;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border: 1px solid black;
-}
-.openAddNewIntervenantForm, .openAddNewContributeurForm {
     width: 100px;
     height: 100px;
+    position: relative;
+    overflow: hidden;
 }
-.openAddNewIntervenantForm span, .openAddNewContributeurForm span {
+.closeAddNewIntervenantFormBtn, .closeAddNewContributeurFormBtn {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: none;
+  background-color: black;
+  cursor: pointer;
+  color: white;
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+}
+.closeAddNewIntervenantFormBtn span, .closeAddNewContributeurFormBtn span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.closeAddNewIntervenantFormBtn:hover span, .closeAddNewContributeurFormBtn:hover span {
+  transform: scale(1.2);
+}
+.intervenantCard form, .contributeurCard form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 25px;
+}
+.intervenantCard form select, .contributeurCard form select {
+    width: 100%;
+    height: 25px;
+    border-radius: 3px;
+    border: none;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.intervenantCard form button, .contributeurCard form button {
+    width: 50%;
+    height: 25px;
+    border-radius: 3px;
+    border: none;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.addNewIntervenantIcon span, .addNewContributeurIcon span {
     color: grey;
     cursor: pointer;
     font-size: 4em;
@@ -161,16 +213,16 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-} 
-.openAddNewIntervenantForm span:hover, .openAddNewContributeurForm span:hover {
+}
+.addNewIntervenantIcon span:hover, .addNewContributeurIcon span:hover {
   color: white;
   background-color: grey;
 }
 .intervenantLogo, .contributeurLogo {
     overflow: hidden;
     width: auto;
-    max-width: 100px;
-    height: 100%;
+    width: 100px;
+    height: 100px;
     position: relative;
 }
 .intervenantLogo :global(img), .contributeurLogo :global(img) {
@@ -179,6 +231,28 @@
     object-fit: cover;
 }
 
+.deleteIntervenantBtn, .deleteContributeurBtn, .deletePictureBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+.deleteIntervenantBtn span, .deleteContributeurBtn span, .deletePictureBtn span {
+  font-size: 2em;
+}
 
 
 

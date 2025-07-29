@@ -6,6 +6,10 @@ import {
   updateBreveById,
   addPictureForBreve,
   addIntervenantForBreve,
+  addContributeurForBreve,
+  deleteContributeur,
+  deleteIntervenant,
+  deletePicture,
 } from "../lib/db";
 import {
   getIconByContributeur,
@@ -28,8 +32,13 @@ export default function UpdateBreveSection({
     useState(false);
   const [showAddNewContributeurForm, setShowAddNewContributeurForm] =
     useState(false);
+  const [hoveredIntervenant, setHoveredIntervenant] = useState(null);
+  const [hoveredContributeur, setHoveredContributeur] = useState(null);
+  const [hoveredPicture, setHoveredPicture] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
+  const [intervenantName, setIntervenantName] = useState("");
+  const [contributeurName, setContributeurName] = useState("");
   const [breveInfo, setBreveInfo] = useState({
     bqsmNumb: brevePreviousInfo.bqsmNumb,
     categorie: brevePreviousInfo.categorie,
@@ -90,6 +99,69 @@ export default function UpdateBreveSection({
       setNeedRefresh((prev) => !prev);
     } catch (error) {
       console.error("erreur lors de l'envoi de l'image :", error.message);
+    }
+  };
+
+  const handleDeletePicture = async (pictureId) => {
+    try {
+      await deletePicture(pictureId);
+      setNeedRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'image :", error);
+    }
+  };
+
+  const handleIntervenantChange = (e) => {
+    setIntervenantName(e.target.value);
+  };
+
+  const handleIntervenantSubmit = async (e) => {
+    e.preventDefault();
+    if (!intervenantName) {
+      alert("Merci de choisir un intervenant !!!");
+      return;
+    }
+    try {
+      await addIntervenantForBreve(brevePreviousInfo.id, intervenantName);
+      setNeedRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'intervenant :", error);
+    }
+  };
+
+  const handleDeleteIntervenant = async (intervenantId) => {
+    try {
+      await deleteIntervenant(intervenantId);
+      setNeedRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'intervenant :", error);
+    }
+  };
+
+  const handleContributeurChange = (e) => {
+    setContributeurName(e.target.value);
+  };
+
+  const handleContributeurSubmit = async (e) => {
+    e.preventDefault();
+    if (!contributeurName) {
+      alert("Merci de choisir un contributeur !!!");
+      return;
+    }
+    try {
+      await addContributeurForBreve(brevePreviousInfo.id, contributeurName);
+      setNeedRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du contributeur :", error);
+    }
+  };
+
+  const handleDeleteContributeur = async (contributeurId) => {
+    try {
+      await deleteContributeur(contributeurId);
+      setNeedRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Erreur lors de la suppression du contributeur :", error);
     }
   };
 
@@ -232,11 +304,25 @@ export default function UpdateBreveSection({
         )}
         {previousPictures.length > 0 &&
           previousPictures.map((picture, index) => (
-            <div key={index} className={styles.pictureCard}>
+            <div
+              key={index}
+              className={styles.pictureCard}
+              onMouseEnter={() => setHoveredPicture(picture.id)}
+              onMouseLeave={() => setHoveredPicture(null)}
+            >
               <img
                 src={`data:image/jpeg;base64,${picture.base64}`}
                 alt={picture.name || "photo"}
               />
+              {hoveredPicture === picture.id && (
+                <button
+                  className={styles.deletePictureBtn}
+                  onClick={() => handleDeletePicture(picture.id)}
+                  title="Supprimer l'image"
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
+              )}
             </div>
           ))}
       </div>
@@ -244,7 +330,7 @@ export default function UpdateBreveSection({
       <div className={styles.updateIntervenants}>
         {!showAddNewIntervenantForm ? (
           <div
-            className={`${styles.intervenantCard} ${styles.openAddNewIntervenantForm}`}
+            className={`${styles.intervenantCard} ${styles.openAddNewIntervenantForm} ${styles.addNewIntervenantIcon}`}
             onClick={() =>
               setShowAddNewIntervenantForm(!showAddNewIntervenantForm)
             }
@@ -257,13 +343,40 @@ export default function UpdateBreveSection({
             </span>
           </div>
         ) : (
-          <div className={`${styles.intervenantCard}`}>test</div>
+          <div
+            className={`${styles.intervenantCard} ${styles.openAddNewIntervenantForm}`}
+          >
+            <button
+              className={styles.closeAddNewIntervenantFormBtn}
+              onClick={() =>
+                setShowAddNewIntervenantForm(!showAddNewIntervenantForm)
+              }
+              title="fermer"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            <form onSubmit={handleIntervenantSubmit}>
+              <select name="intervenant" onChange={handleIntervenantChange}>
+                <option value="">Catégorie</option>
+                {filters
+                  .filter((liste) => liste.categorie === "intervenant")
+                  .map((item) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+              </select>
+              <button type="submit">ajouter</button>
+            </form>
+          </div>
         )}
         {previousIntervenants.length > 0 &&
           previousIntervenants.map((item, index) => (
             <div
               className={`${styles.intervenantCard} ${styles.intervenantLogo}`}
               key={item.name + item.id + index}
+              onMouseEnter={() => setHoveredIntervenant(item.id)}
+              onMouseLeave={() => setHoveredIntervenant(null)}
             >
               <Image
                 src={getIconByIntervenant(item.name)}
@@ -272,6 +385,15 @@ export default function UpdateBreveSection({
                 width={90}
                 height={90}
               />
+              {hoveredIntervenant === item.id && (
+                <button
+                  className={styles.deleteIntervenantBtn}
+                  onClick={() => handleDeleteIntervenant(item.id)}
+                  title="Supprimer l'intervenant"
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
+              )}
             </div>
           ))}
       </div>
@@ -279,7 +401,7 @@ export default function UpdateBreveSection({
       <div className={styles.updateContributeurs}>
         {!showAddNewContributeurForm ? (
           <div
-            className={`${styles.contributeurCard} ${styles.openAddNewContributeurForm}`}
+            className={`${styles.contributeurCard} ${styles.openAddNewContributeurForm} ${styles.addNewContributeurIcon}`}
             onClick={() =>
               setShowAddNewContributeurForm(!showAddNewContributeurForm)
             }
@@ -292,13 +414,40 @@ export default function UpdateBreveSection({
             </span>
           </div>
         ) : (
-          <div className={`${styles.contributeurCard}`}>test</div>
+          <div
+            className={`${styles.contributeurCard} ${styles.openAddNewContributeurForm}`}
+          >
+            <button
+              className={styles.closeAddNewContributeurFormBtn}
+              onClick={() =>
+                setShowAddNewContributeurForm(!showAddNewContributeurForm)
+              }
+              title="fermer"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            <form onSubmit={handleContributeurSubmit}>
+              <select name="contributeur" onChange={handleContributeurChange}>
+                <option value="">Catégorie</option>
+                {filters
+                  .filter((liste) => liste.categorie === "contributeur")
+                  .map((item) => (
+                    <option key={item.id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+              </select>
+              <button type="submit">ajouter</button>
+            </form>
+          </div>
         )}
         {previousContributeurs.length > 0 &&
           previousContributeurs.map((item, index) => (
             <div
               className={`${styles.contributeurCard} ${styles.contributeurLogo}`}
               key={item.name + item.id + index}
+              onMouseEnter={() => setHoveredContributeur(item.id)}
+              onMouseLeave={() => setHoveredContributeur(null)}
             >
               <Image
                 src={getIconByContributeur(item.name)}
@@ -307,6 +456,15 @@ export default function UpdateBreveSection({
                 width={90}
                 height={90}
               />
+              {hoveredContributeur === item.id && (
+                <button
+                  className={styles.deleteContributeurBtn}
+                  onClick={() => handleDeleteContributeur(item.id)}
+                  title="Supprimer le contributeur"
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
+              )}
             </div>
           ))}
       </div>

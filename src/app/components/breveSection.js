@@ -6,6 +6,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import BreveCard from "./breveCard";
 import BreveDetails from "./breveDetails";
 import { getBreveById } from "../lib/db";
+import AddANewBreveSection from "./addANewBreve";
 
 export default function BreveSection({
   selectedBreveId,
@@ -17,6 +18,7 @@ export default function BreveSection({
   const observer = useRef();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [selectedBreve, setSelectedBreve] = useState(null);
+  const [openAddBreve, setOpenAddBreve] = useState(false);
 
   const lastBreveRef = useCallback(
     (node) => {
@@ -70,6 +72,9 @@ export default function BreveSection({
     setFocusedBreve(null);
     if (resetMapView) resetMapView();
   };
+  const handleCloseAddNewBreve = () => {
+    setOpenAddBreve(false);
+  };
 
   const activeFiltersArray = Object.entries(activeFilters)
     .filter(([key, value]) => value && value.trim() !== "")
@@ -99,13 +104,22 @@ export default function BreveSection({
         ) : (
           <p>Aucun</p>
         )}
-        <span
-          onClick={handleCloseDetails}
-          className="material-symbols-outlined"
-          title="Recentrer la carte"
-        >
-          restart_alt
-        </span>
+        <div className={styles.breveSectionActions}>
+          <span
+            onClick={() => setOpenAddBreve(!openAddBreve)}
+            className="material-symbols-outlined"
+            title="Ajouter une brève"
+          >
+            add
+          </span>
+          <span
+            onClick={handleCloseDetails}
+            className="material-symbols-outlined"
+            title="Recentrer la carte"
+          >
+            restart_alt
+          </span>
+        </div>
       </div>
       <div className={styles.brevesCards}>
         {breves.content?.map((item, index) => {
@@ -132,6 +146,9 @@ export default function BreveSection({
           hasPrev={hasPrev}
           hasNext={hasNext}
         />
+      )}
+      {openAddBreve && (
+        <AddANewBreveSection handleClose={handleCloseAddNewBreve} />
       )}
     </section>
   );

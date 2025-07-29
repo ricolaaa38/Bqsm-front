@@ -223,6 +223,25 @@ export async function addPictureForBreve(name, id, file) {
   }
 }
 
+export async function deletePicture(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/pictures/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    return await response.text();
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'image :", error.message);
+    throw error;
+  }
+}
+
 export async function getIntervenantsByBreveId(breveId) {
   try {
     const response = await fetch(
@@ -260,6 +279,28 @@ export async function addIntervenantForBreve(id, name) {
   }
 }
 
+export async function deleteIntervenant(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/intervenants/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    return await response.text();
+  } catch (error) {
+    console.error(
+      "Erreur lors de la suppression de l'intervenant :",
+      error.message
+    );
+    throw error;
+  }
+}
+
 export async function getContributeursByBreveId(breveId) {
   try {
     const response = await fetch(
@@ -276,6 +317,47 @@ export async function getContributeursByBreveId(breveId) {
   } catch (error) {
     console.error("Erreur lors de la requête", error);
     return [];
+  }
+}
+
+export async function addContributeurForBreve(id, name) {
+  try {
+    const params = new URLSearchParams({ id, name });
+    const url = `http://localhost:8080/api/contributeurs/create?${params}`;
+
+    const response = await fetch(url, { method: "POST" });
+    if (!response.ok) {
+      console.error(
+        "Erreur lors de la création du contributeur :",
+        response.status
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Erreur réseau lors de l'ajout du contributeur: ", error);
+    return null;
+  }
+}
+
+export async function deleteContributeur(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/contributeurs/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    return await response.text();
+  } catch (error) {
+    console.error(
+      "Erreur lors de la suppression du contributeur :",
+      error.message
+    );
+    throw error;
   }
 }
 
@@ -297,6 +379,27 @@ export async function addNewBrevesFromFile(file) {
   } catch (error) {
     console.error("Erreur lors de l'upload des breves: ", error);
     return `Error uploading breves: ${error.message}`;
+  }
+}
+
+export async function addNewBreve(breve) {
+  try {
+    const response = await fetch("http://localhost:8080/api/breves/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(breve),
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la création de la breve: ", error);
+    throw error;
   }
 }
 

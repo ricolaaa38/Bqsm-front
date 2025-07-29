@@ -17,7 +17,7 @@ export function getIconByCategorie(categorie) {
 // Intervenant
 export function getIconByIntervenant(intervenant) {
   switch (intervenant) {
-    case "marine national":
+    case "marine_national":
       return "/marine-logo.jpg";
     case "douanes":
       return "/vedette.jpg";
@@ -29,7 +29,7 @@ export function getIconByIntervenant(intervenant) {
 // Contributeur
 export function getIconByContributeur(contributeur) {
   switch (contributeur) {
-    case "marine national":
+    case "marine_national":
       return "/marine-logo.jpg";
     case "douanes":
       return "/vedette.jpg";

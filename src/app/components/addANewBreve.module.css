@@ -1,0 +1,69 @@
+.addBreveSection {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 5px;
+  background-color: black;
+}
+.addBreveDiv {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: white;
+  border-radius: 5px;
+}
+.addBreveTitle {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.addBreveTitle span {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  color: black;
+}
+.addBreveTitle span:hover {
+  transform: scale(1.2);
+}
+.formRow div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+.formRow div input, .formRow div select {
+    width: 100%;
+}
+
+.formTextArea {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+}
+
+.formTextArea textarea {
+    width: 100%;
+    height: 150px;
+    resize: none;
+    overflow-y: scroll;
+}
