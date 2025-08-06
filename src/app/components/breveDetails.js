@@ -6,6 +6,7 @@ import {
   getContributeursByBreveId,
   getIntervenantsByBreveId,
   getPicturesByBreveId,
+  getAllLinksByBreveId,
 } from "../lib/db";
 import {
   getIconByCategorie,
@@ -32,6 +33,7 @@ export default function BreveDetails({
   const [intervenants, setIntervenants] = useState([]);
   const [contributeurs, setContributeurs] = useState([]);
   const [openUpdateBreve, setOpenUpdateBreve] = useState(false);
+  const [links, setLinks] = useState([]);
 
   function nextPic() {
     setCurrent((c) => (c < pictures.length - 1 ? c + 1 : 0));
@@ -42,14 +44,18 @@ export default function BreveDetails({
 
   useEffect(() => {
     if (breve?.id) {
+      setPictures([]);
+      setLinks([]);
+      setIntervenants([]);
+      setContributeurs([]);
       getIntervenantsByBreveId(breve.id).then(setIntervenants);
       getContributeursByBreveId(breve.id).then(setContributeurs);
       getPicturesByBreveId(breve.id).then(setPictures);
+      getAllLinksByBreveId(breve.id).then(setLinks);
       setCurrent(0);
     }
   }, [breve, needRefresh]);
-
-  console.log(openUpdateBreve);
+  console.log("BreveDetails links:", links);
 
   return (
     <div className={styles.modalOverlay}>
@@ -131,7 +137,26 @@ export default function BreveDetails({
           )}
         </div>
         <div className={styles.breveBody}>
-          <p>{breve.contenu}</p>
+          <p className={styles.breveBodyContent}>{breve.contenu}</p>
+          <div className={styles.breveBodyLink}>
+            <p>Liens associés :</p>
+            {links.length > 0 ? (
+              links.map((link, index) => (
+                <a
+                  key={index}
+                  href={link.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`lien vers ${link.name}`}
+                >
+                  <span className="material-symbols-outlined">link</span>
+                  {link.name}
+                </a>
+              ))
+            ) : (
+              <p>Aucun lien disponible</p>
+            )}
+          </div>
         </div>
         <div className={styles.breveIntervenantsBody}>
           <h3>Intervenants</h3>
@@ -197,6 +222,7 @@ export default function BreveDetails({
               previousPictures={pictures}
               previousIntervenants={intervenants}
               previousContributeurs={contributeurs}
+              previousLinks={links}
             />
           </div>
         </div>

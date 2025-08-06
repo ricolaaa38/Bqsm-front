@@ -7,6 +7,7 @@ import {
   addPictureForBreve,
   addIntervenantForBreve,
   addContributeurForBreve,
+  addLinkForBreve,
   deleteContributeur,
   deleteIntervenant,
   deletePicture,
@@ -24,9 +25,11 @@ export default function UpdateBreveSection({
   previousPictures,
   previousIntervenants,
   previousContributeurs,
+  previousLinks,
 }) {
   const countryNames = getNames();
   const { setNeedRefresh, filters } = useData();
+  const [showAddNewLinkForm, setShowAddNewLinkForm] = useState(false);
   const [showAddNewPictureForm, setShowAddNewPictureForm] = useState(false);
   const [showAddNewIntervenantForm, setShowAddNewIntervenantForm] =
     useState(false);
@@ -35,6 +38,8 @@ export default function UpdateBreveSection({
   const [hoveredIntervenant, setHoveredIntervenant] = useState(null);
   const [hoveredContributeur, setHoveredContributeur] = useState(null);
   const [hoveredPicture, setHoveredPicture] = useState(null);
+  const [linkName, setLinkName] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
   const [intervenantName, setIntervenantName] = useState("");
@@ -165,6 +170,26 @@ export default function UpdateBreveSection({
     }
   };
 
+  const handleLinkSubmit = async (e) => {
+    e.preventDefault();
+    if (!linkName || !linkUrl) {
+      alert("Merci de remplir tous les champs !");
+      return;
+    }
+    try {
+      await addLinkForBreve(brevePreviousInfo.id, {
+        name: linkName,
+        link: linkUrl,
+      });
+      setNeedRefresh((prev) => !prev);
+      setLinkName("");
+      setLinkUrl("");
+      setShowAddNewLinkForm(false);
+    } catch (error) {
+      alert(error.message || "Erreur lors de l'ajout du lien");
+    }
+  };
+
   return (
     <section className={styles.updateBreveInfoSection}>
       <form onSubmit={handleBreveUpdateSubmit}>
@@ -272,6 +297,50 @@ export default function UpdateBreveSection({
         </div>
         <button type="submit">modifier</button>
       </form>
+
+      <div className={styles.updateBreveLinks}>
+        <div className={styles.updateBreveLinksHeader}>
+          <h4>Liens :</h4>
+          <div className={`${styles.linkFormCard}`}>
+            <form onSubmit={handleLinkSubmit}>
+              <input
+                type="text"
+                placeholder="Nom du lien"
+                value={linkName}
+                onChange={(e) => setLinkName(e.target.value)}
+                required
+              />
+              <input
+                type="url"
+                placeholder="URL du lien"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                required
+              />
+              <button type="submit">Ajouter</button>
+            </form>
+          </div>
+        </div>
+        <div className={styles.updateBreveBodyLink}>
+          {previousLinks.length > 0 ? (
+            previousLinks.map((link, index) => (
+              <a
+                key={index}
+                href={link.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`lien vers ${link.name}`}
+              >
+                <span className="material-symbols-outlined">link</span>
+                {link.name}
+              </a>
+            ))
+          ) : (
+            <p>Aucun lien disponible</p>
+          )}
+        </div>
+      </div>
+
       <div className={styles.updateBrevePictures}>
         {!showAddNewPictureForm ? (
           <div

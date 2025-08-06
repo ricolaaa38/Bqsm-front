@@ -22,7 +22,7 @@ export default function Header() {
             <p>Accueil</p>
           </Link>
         </div>
-        <div>
+        {/* <div>
           <Link
             href="/profil"
             className={pathname === "/profil" ? styles.active : ""}
@@ -30,7 +30,7 @@ export default function Header() {
             <span className="material-symbols-outlined">person</span>
             <p>Profil</p>
           </Link>
-        </div>
+        </div> */}
         <div>
           <Link
             href="/carte"

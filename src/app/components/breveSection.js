@@ -5,7 +5,7 @@ import { useData } from "../context/DataContext";
 import { useCallback, useRef, useState, useEffect } from "react";
 import BreveCard from "./breveCard";
 import BreveDetails from "./breveDetails";
-import { getBreveById } from "../lib/db";
+import { getBreveById, getFilteredBrevesForExport } from "../lib/db";
 import AddANewBreveSection from "./addANewBreve";
 
 export default function BreveSection({

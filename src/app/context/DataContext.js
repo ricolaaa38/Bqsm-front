@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getFiltres, getAllBreves } from "../lib/db";
+import {
+  getFiltres,
+  getAllBreves,
+  getFilteredBrevesForExport,
+} from "../lib/db";
 
 const DataContext = createContext();
 
@@ -13,13 +17,18 @@ export function DataProvider({ children }) {
   const [activeFilters, setActiveFilters] = useState({});
   const [needRefresh, setNeedRefresh] = useState(false);
   const [userRole, setUserRole] = useState("admin");
+  const [brevesForExport, setBrevesForExport] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const filtersData = await getFiltres();
         const brevesData = await getAllBreves(0, 10, activeFilters);
+        const brevesForExportData = await getFilteredBrevesForExport(
+          activeFilters
+        );
 
+        setBrevesForExport(brevesForExportData || []);
         setFilters(filtersData || []);
         setBreves(brevesData || { content: [] });
         setHasMore(!brevesData.last);
@@ -62,6 +71,7 @@ export function DataProvider({ children }) {
         userRole,
         needRefresh,
         setNeedRefresh,
+        brevesForExport,
       }}
     >
       {children}

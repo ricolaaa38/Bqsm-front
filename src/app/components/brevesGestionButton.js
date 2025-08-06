@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import { addNewBrevesFromFile } from "../lib/db";
 import styles from "./brevesGestionButton.module.css";
+import { useData } from "../context/DataContext";
+import { exportBreves } from "./exportBreves";
 
 export default function BrevesGestionButtons() {
   const [file, setFile] = useState(null);
@@ -10,6 +12,7 @@ export default function BrevesGestionButtons() {
   const [isOpen, setIsOpen] = useState(false);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null);
+  const { brevesForExport } = useData();
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -71,7 +74,10 @@ export default function BrevesGestionButtons() {
         <p>IMPORTER</p>
         <span className="material-symbols-outlined">keyboard_arrow_down</span>
       </button>
-      <button className={styles.exportButton}>
+      <button
+        className={styles.exportButton}
+        onClick={() => exportBreves(brevesForExport)}
+      >
         <p>EXPORTER</p>
         <span className="material-symbols-outlined">keyboard_arrow_down</span>
       </button>

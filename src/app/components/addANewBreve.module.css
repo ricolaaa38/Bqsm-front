@@ -41,29 +41,51 @@
 .addBreveTitle span:hover {
   transform: scale(1.2);
 }
-.formRow div {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
+.addBreveDiv form {
+  width: 100%;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 10px;
 }
-.formRow div input, .formRow div select {
-    width: 100%;
+ .formRow{
+   width: 100%;
+   display: grid;
+   grid-template-columns: 1fr 2fr;
+   align-items: center;
+}
+.formRow label,
+.formRow select,
+.formRow input{
+  width: 100%;
+  height: 25px;
+  border-radius: 3px;
+}
+.formTextarea {
+  width: 100%;
+  height: 40%;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.formTextarea textarea {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  resize: none;
 }
 
-.formTextArea {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-    height: auto;
-}
-
-.formTextArea textarea {
-    width: 100%;
-    height: 150px;
-    resize: none;
-    overflow-y: scroll;
+.addBreveDiv button {
+  width: 100%;
+  height: 40px;
+  border-radius: 3px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer;
 }

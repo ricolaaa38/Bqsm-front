@@ -185,17 +185,44 @@
 .breveBody {
     width: 100%;
     height: 25%;
-    padding-bottom: 10px;
+    padding-bottom: 0px;
     border-bottom: 2px solid lightgrey;
     min-height: 0;
     display: flex;
     flex-direction: column;
+    gap: 5px;
 }
-.breveBody p {
+.breveBody .breveBodyContent {
     width: 100%;
-    height: 100%;
+    height: 85%;
     overflow-y: auto;
     min-height: 0;
+}
+.breveBody .breveBodyLink {
+    width: 100%;
+    height: 15%;
+    color: darkblue;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 5px;
+}
+.breveBodyLink p {
+    color: black;
+}
+.breveBodyLink a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.breveBodyLink a:hover {
+    color: blue;
 }
 
 .breveIntervenantsBody, .breveContributeursBody {

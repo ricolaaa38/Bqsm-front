@@ -144,6 +144,29 @@ export async function getAllBreves(page = 0, size = 10, filters = {}) {
   }
 }
 
+export async function getFilteredBrevesForExport(filters = {}) {
+  try {
+    const queryParams = new URLSearchParams(
+      Object.entries(filters).filter(
+        ([_, value]) => value !== undefined && value !== null
+      )
+    );
+    const response = await fetch(
+      `http://localhost:8080/api/breves/export?${queryParams.toString()}`,
+      {
+        method: "GET",
+      }
+    );
+    if (response.ok) {
+      return await response.json();
+    } else {
+      console.error("Erreur lors de la récupération des brèves pour export");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la requête des brèves pour export", error);
+  }
+}
+
 export async function getAllBreveCoords(filters = {}) {
   try {
     const queryParams = new URLSearchParams(
@@ -626,6 +649,51 @@ export async function getOneFile(fileId) {
       "Erreur lors de la récupération des enfants :",
       error.message
     );
+    throw error;
+  }
+}
+
+export async function getAllLinksByBreveId(breveId) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/links/?breveId=${breveId}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des liens :", error.message);
+    throw error;
+  }
+}
+
+export async function addLinkForBreve(breveId, link) {
+  const newLink = {
+    breveId: { id: breveId },
+    name: link.name,
+    link: link.link,
+  };
+  try {
+    const response = await fetch("http://localhost:8080/api/links/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newLink),
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du lien :", error.message);
     throw error;
   }
 }
