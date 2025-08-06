@@ -678,6 +678,7 @@ export async function addLinkForBreve(breveId, link) {
     breveId: { id: breveId },
     name: link.name,
     link: link.link,
+    typeLink: link.typeLink,
   };
   try {
     const response = await fetch("http://localhost:8080/api/links/create", {
@@ -696,4 +697,43 @@ export async function addLinkForBreve(breveId, link) {
     console.error("Erreur lors de l'ajout du lien :", error.message);
     throw error;
   }
+}
+
+export async function deleteLink(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/links/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    return await response.text();
+  } catch (error) {
+    console.error("Erreur lors de la suppression du lien :", error.message);
+    throw error;
+  }
+}
+
+export async function getFileMeta(fileId) {
+  const response = await fetch(
+    `http://localhost:8080/api/arborescence/file-meta/${fileId}`
+  );
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return await response.json(); // doit contenir { parentId, ... }
+}
+
+export async function getFolderMeta(folderId) {
+  const response = await fetch(
+    `http://localhost:8080/api/arborescence/folder-meta/${folderId}`
+  );
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return await response.json(); // doit contenir { parentId, ... }
 }

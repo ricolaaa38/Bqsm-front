@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useData } from "../context/DataContext";
 import {
   updateBreveById,
@@ -11,6 +12,8 @@ import {
   deleteContributeur,
   deleteIntervenant,
   deletePicture,
+  deleteLink,
+  getAllFiles,
 } from "../lib/db";
 import {
   getIconByContributeur,
@@ -38,8 +41,14 @@ export default function UpdateBreveSection({
   const [hoveredIntervenant, setHoveredIntervenant] = useState(null);
   const [hoveredContributeur, setHoveredContributeur] = useState(null);
   const [hoveredPicture, setHoveredPicture] = useState(null);
+  const [hoveredLink, setHoveredLink] = useState(null);
+
   const [linkName, setLinkName] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [linkType, setLinkType] = useState("url");
+  const [selectFileId, setSelectedFileId] = useState("");
+  const [filesList, setFilesListe] = useState([]);
+
   const [imageFile, setImageFile] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
   const [intervenantName, setIntervenantName] = useState("");
@@ -170,23 +179,47 @@ export default function UpdateBreveSection({
     }
   };
 
+  useEffect(() => {
+    if (linkType === "file") {
+      getAllFiles().then(setFilesListe);
+    }
+  }, [linkType]);
+
   const handleLinkSubmit = async (e) => {
     e.preventDefault();
-    if (!linkName || !linkUrl) {
-      alert("Merci de remplir tous les champs !");
-      return;
-    }
-    try {
-      await addLinkForBreve(brevePreviousInfo.id, {
+    let linkData;
+    if (linkType === "url") {
+      linkData = {
         name: linkName,
         link: linkUrl,
-      });
+        typeLink: "url",
+      };
+    } else if (linkType === "file") {
+      linkData = {
+        name: linkName,
+        link: `/api/arborescence/get-file/${selectFileId}`,
+        typeLink: "file",
+      };
+    }
+    try {
+      await addLinkForBreve(brevePreviousInfo.id, linkData);
       setNeedRefresh((prev) => !prev);
       setLinkName("");
       setLinkUrl("");
+      setLinkType("url");
+      setSelectedFileId("");
       setShowAddNewLinkForm(false);
     } catch (error) {
-      alert(error.message || "Erreur lors de l'ajout du lien");
+      console.error("Erreur lors de l'ajout du lien :", error);
+    }
+  };
+
+  const handleDeleteLink = async (linkId) => {
+    try {
+      await deleteLink(linkId);
+      setNeedRefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Erreur lors de la suppression du lien :", error);
     }
   };
 
@@ -310,13 +343,35 @@ export default function UpdateBreveSection({
                 onChange={(e) => setLinkName(e.target.value)}
                 required
               />
-              <input
-                type="url"
-                placeholder="URL du lien"
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-                required
-              />
+              <select
+                value={linkType}
+                onChange={(e) => setLinkType(e.target.value)}
+              >
+                <option value="url">Lien externe</option>
+                <option value="file">Document arborescence</option>
+              </select>
+              {linkType === "url" ? (
+                <input
+                  type="url"
+                  placeholder="URL du lien"
+                  value={linkUrl}
+                  onChange={(e) => setLinkUrl(e.target.value)}
+                  required
+                />
+              ) : (
+                <select
+                  value={selectFileId}
+                  onChange={(e) => setSelectedFileId(e.target.value)}
+                  required
+                >
+                  <option value="">-- Choisir un document --</option>
+                  {filesList.map((file) => (
+                    <option key={file.id} value={file.id}>
+                      {file.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               <button type="submit">Ajouter</button>
             </form>
           </div>
@@ -326,13 +381,26 @@ export default function UpdateBreveSection({
             previousLinks.map((link, index) => (
               <a
                 key={index}
-                href={link.link}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={"#"}
                 title={`lien vers ${link.name}`}
+                onMouseEnter={() => setHoveredLink(link.id)}
+                onMouseLeave={() => setHoveredLink(null)}
               >
-                <span className="material-symbols-outlined">link</span>
-                {link.name}
+                {hoveredLink === link.id ? (
+                  <button
+                    className={styles.linkButton}
+                    onClick={() => handleDeleteLink(link.id)}
+                  >
+                    <span className="material-symbols-outlined">delete</span>
+
+                    {link.name}
+                  </button>
+                ) : (
+                  <button className={styles.linkButton}>
+                    <span className="material-symbols-outlined">link</span>
+                    {link.name}
+                  </button>
+                )}
               </a>
             ))
           ) : (

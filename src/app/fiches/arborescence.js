@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import styles from "./arborescence.module.css";
 import {
   getAllFolders,
@@ -10,6 +11,8 @@ import {
   deleteFile,
   deleteFolder,
   getOneFile,
+  getFileMeta,
+  getFolderMeta,
 } from "../lib/db";
 import AddFolderModal from "./addFolderModal";
 import AddFileModal from "./addFileModal";
@@ -27,6 +30,42 @@ export default function Arborescence({ setSelectedFileForViewing }) {
   const [addMode, setAddMode] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const searchParams = useSearchParams();
+  const fileId = searchParams.get("fileId");
+
+  useEffect(() => {
+    async function fetchFileAndOpenFolders() {
+      if (fileId) {
+        try {
+          // 1. Récupère le fichier pour avoir son parentId
+          const fileMeta = await getFileMeta(Number(fileId)); // À créer : retourne { parentId, ... }
+          let currentParentId = fileMeta.parentId;
+
+          // 2. Ouvre tous les dossiers parents
+          const parentIds = [];
+          while (currentParentId) {
+            parentIds.unshift(currentParentId); // On veut ouvrir du root vers le leaf
+            const parentMeta = await getFolderMeta(currentParentId.id); // À créer : retourne { parentId, ... }
+            currentParentId = parentMeta.parentId;
+          }
+          for (const id of parentIds) {
+            const folderId = typeof id === "object" ? id.id : id;
+            await toggleFolder(folderId); // Ouvre chaque dossier parent
+          }
+          // 3. Récupère et affiche le fichier
+          const blob = await getOneFile(fileId);
+          const fileUrl = URL.createObjectURL(blob);
+          setSelectedFileForViewing(fileUrl);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération du fichier PDF :",
+            error
+          );
+        }
+      }
+    }
+    fetchFileAndOpenFolders();
+  }, [fileId]);
 
   // Fonction pour recharger l'arborescence complète
   const fetchFolders = async () => {

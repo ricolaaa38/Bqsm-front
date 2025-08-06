@@ -98,7 +98,7 @@
     align-items: flex-start;
     gap: 5px;
 }
-.linkFormCard form input {
+.linkFormCard form input, .linkFormCard form select {
     width: 40%;
     height: 100%;
 }
@@ -112,12 +112,13 @@
   white-space: nowrap;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 10px;
   overflow-x: auto
 }
 .updateBreveBodyLink a {
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -320,5 +321,19 @@
   font-size: 2em;
 }
 
+.linkButton {
+  width: auto;
+  height: 100%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: blue;
+}
+.linkButton:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+}
 
 

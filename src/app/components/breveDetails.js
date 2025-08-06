@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useData } from "../context/DataContext";
 import {
   getContributeursByBreveId,
@@ -26,7 +27,7 @@ export default function BreveDetails({
   hasNext,
 }) {
   if (!breve) return null;
-
+  const router = useRouter();
   const { userRole, needRefresh } = useData();
   const [pictures, setPictures] = useState([]);
   const [current, setCurrent] = useState(0);
@@ -55,7 +56,6 @@ export default function BreveDetails({
       setCurrent(0);
     }
   }, [breve, needRefresh]);
-  console.log("BreveDetails links:", links);
 
   return (
     <div className={styles.modalOverlay}>
@@ -138,21 +138,39 @@ export default function BreveDetails({
         </div>
         <div className={styles.breveBody}>
           <p className={styles.breveBodyContent}>{breve.contenu}</p>
+
           <div className={styles.breveBodyLink}>
             <p>Liens associés :</p>
             {links.length > 0 ? (
-              links.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`lien vers ${link.name}`}
-                >
-                  <span className="material-symbols-outlined">link</span>
-                  {link.name}
-                </a>
-              ))
+              links.map((link, index) =>
+                link.typeLink === "file" ? (
+                  <a
+                    key={index}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.open(
+                        `/fiches?fileId=${link.link.split("/").pop()}`
+                      );
+                    }}
+                    title={`Ouvrir le document ${link.name}`}
+                  >
+                    <span className="material-symbols-outlined">link</span>
+                    {link.name}
+                  </a>
+                ) : (
+                  <a
+                    key={index}
+                    href={link.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`lien vers ${link.name}`}
+                  >
+                    <span className="material-symbols-outlined">link</span>
+                    {link.name}
+                  </a>
+                )
+              )
             ) : (
               <p>Aucun lien disponible</p>
             )}
