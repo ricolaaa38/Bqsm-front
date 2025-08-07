@@ -14,7 +14,8 @@ export default function BreveSection({
   setFocusedBreve,
   resetMapView,
 }) {
-  const { breves, loadMoreBreves, hasMore, activeFilters } = useData();
+  const { breves, loadMoreBreves, hasMore, activeFilters, userRole } =
+    useData();
   const observer = useRef();
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [selectedBreve, setSelectedBreve] = useState(null);
@@ -105,13 +106,15 @@ export default function BreveSection({
           <p>Aucun</p>
         )}
         <div className={styles.breveSectionActions}>
-          <span
-            onClick={() => setOpenAddBreve(!openAddBreve)}
-            className="material-symbols-outlined"
-            title="Ajouter une brève"
-          >
-            add
-          </span>
+          {userRole === "admin" && (
+            <span
+              onClick={() => setOpenAddBreve(!openAddBreve)}
+              className="material-symbols-outlined"
+              title="Ajouter une brève"
+            >
+              add
+            </span>
+          )}
           <span
             onClick={handleCloseDetails}
             className="material-symbols-outlined"

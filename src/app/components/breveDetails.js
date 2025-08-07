@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useData } from "../context/DataContext";
 import {
   getContributeursByBreveId,
   getIntervenantsByBreveId,
   getPicturesByBreveId,
   getAllLinksByBreveId,
+  getCommentsByBreveId,
 } from "../lib/db";
 import {
   getIconByCategorie,
@@ -17,6 +17,8 @@ import {
 import UpdateBreveSection from "./updateBreve";
 import styles from "./breveDetails.module.css";
 import Image from "next/image";
+import BreveCommentaires from "./breveCommentaires";
+import { set } from "ol/transform";
 
 export default function BreveDetails({
   breve,
@@ -27,13 +29,14 @@ export default function BreveDetails({
   hasNext,
 }) {
   if (!breve) return null;
-  const router = useRouter();
   const { userRole, needRefresh } = useData();
   const [pictures, setPictures] = useState([]);
   const [current, setCurrent] = useState(0);
   const [intervenants, setIntervenants] = useState([]);
   const [contributeurs, setContributeurs] = useState([]);
+  const [commentaires, setCommentaires] = useState([]);
   const [openUpdateBreve, setOpenUpdateBreve] = useState(false);
+  const [openCommentaireSection, setOpenCommentaireSection] = useState(false);
   const [links, setLinks] = useState([]);
 
   function nextPic() {
@@ -49,10 +52,12 @@ export default function BreveDetails({
       setLinks([]);
       setIntervenants([]);
       setContributeurs([]);
+      setCommentaires([]);
       getIntervenantsByBreveId(breve.id).then(setIntervenants);
       getContributeursByBreveId(breve.id).then(setContributeurs);
       getPicturesByBreveId(breve.id).then(setPictures);
       getAllLinksByBreveId(breve.id).then(setLinks);
+      getCommentsByBreveId(breve.id).then(setCommentaires);
       setCurrent(0);
     }
   }, [breve, needRefresh]);
@@ -77,7 +82,10 @@ export default function BreveDetails({
               <span className="material-symbols-outlined">edit_square</span>
             </button>
           ) : (
-            <button title="ajouter un commentaire">
+            <button
+              title="ajouter un commentaire"
+              onClick={() => setOpenCommentaireSection(!openCommentaireSection)}
+            >
               <span className="material-symbols-outlined">comment</span>
             </button>
           )}
@@ -102,6 +110,10 @@ export default function BreveDetails({
               <strong>{breve.titre}</strong>
             </p>
             <p>{breve.zone}</p>
+          </div>
+          <div className={styles.breveComments}>
+            {commentaires.length}
+            <span className="material-symbols-outlined">comment</span>
           </div>
         </div>
         <div className={styles.breveCarroussel}>
@@ -245,6 +257,7 @@ export default function BreveDetails({
           </div>
         </div>
       )}
+      {openCommentaireSection && <BreveCommentaires breveId={breve.id} />}
     </div>
   );
 }

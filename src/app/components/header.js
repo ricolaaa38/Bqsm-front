@@ -3,9 +3,11 @@
 import Link from "next/link";
 import styles from "./header.module.css";
 import { usePathname } from "next/navigation";
+import { useData } from "../context/DataContext";
 
 export default function Header() {
   const pathname = usePathname();
+  const { userRole } = useData();
 
   return (
     <header id={styles.header}>
@@ -49,19 +51,20 @@ export default function Header() {
             <p>Fiches d'analyse</p>
           </Link>
         </div>
-        <div>
-          <Link
-            href="/settings"
-            title="settings"
-            className={pathname === "/settings" ? styles.active : ""}
-          >
-            <span className="material-symbols-outlined">settings</span>
-          </Link>
-        </div>
+        {userRole === "admin" && (
+          <div>
+            <Link
+              href="/settings"
+              title="settings"
+              className={pathname === "/settings" ? styles.active : ""}
+            >
+              <span className="material-symbols-outlined">settings</span>
+            </Link>
+          </div>
+        )}
         <div>
           <Link href="/" title="Déconnexion">
             <span className="material-symbols-outlined">logout</span>
-            {/* <p>Deconnexion</p> */}
           </Link>
         </div>
       </nav>

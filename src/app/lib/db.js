@@ -760,3 +760,72 @@ export async function getFolderMeta(folderId) {
   }
   return await response.json(); // doit contenir { parentId, ... }
 }
+
+export async function getCommentsByBreveId(breveId) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/commentaires/?breveId=${breveId}`
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des commentaires :",
+      error.message
+    );
+    throw error;
+  }
+}
+
+export async function addCommentForBreve(breveId, comment) {
+  const today = new Date().toISOString().slice(0, 10);
+  const newComment = {
+    breveId: { id: breveId },
+    date: today,
+    redacteur: comment.redacteur,
+    objet: comment.objet,
+    commentaire: comment.commentaire,
+  };
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/commentaires/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newComment),
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du commentaire :", error.message);
+    throw error;
+  }
+}
+
+export async function deleteComment(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/commentaires/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.text();
+  } catch (error) {
+    console.error(
+      "Erreur lors de la suppression du commentaire :",
+      error.message
+    );
+    throw error;
+  }
+}

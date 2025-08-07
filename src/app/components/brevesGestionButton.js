@@ -12,7 +12,7 @@ export default function BrevesGestionButtons() {
   const [isOpen, setIsOpen] = useState(false);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null);
-  const { brevesForExport } = useData();
+  const { brevesForExport, userRole } = useData();
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -67,13 +67,15 @@ export default function BrevesGestionButtons() {
 
   return (
     <section className={styles.brevesGestionButtonSection}>
-      <button
-        className={styles.importButton}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <p>IMPORTER</p>
-        <span className="material-symbols-outlined">keyboard_arrow_down</span>
-      </button>
+      {userRole === "admin" && (
+        <button
+          className={styles.importButton}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <p>IMPORTER</p>
+          <span className="material-symbols-outlined">keyboard_arrow_down</span>
+        </button>
+      )}
       <button
         className={styles.exportButton}
         onClick={() => exportBreves(brevesForExport)}
@@ -81,10 +83,12 @@ export default function BrevesGestionButtons() {
         <p>EXPORTER</p>
         <span className="material-symbols-outlined">keyboard_arrow_down</span>
       </button>
-      <button className={styles.diffuserButton}>
-        <p>DIFFUSER</p>
-        <span className="material-symbols-outlined">keyboard_arrow_down</span>
-      </button>
+      {userRole === "admin" && (
+        <button className={styles.diffuserButton}>
+          <p>DIFFUSER</p>
+          <span className="material-symbols-outlined">keyboard_arrow_down</span>
+        </button>
+      )}
       {isOpen && (
         <div className={styles.uploadSection}>
           <label htmlFor="file">Sélectionnez une brève :</label>

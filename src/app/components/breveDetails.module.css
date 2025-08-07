@@ -51,6 +51,7 @@
 }
 
 .breveCardHeader {
+    position: relative;
     width: 100%;
     height: 15%;
     border-top: 2px solid lightgrey;
@@ -84,6 +85,22 @@
     flex-direction: row;
     justify-content: space-between;
     padding-right: 50px;
+}
+.breveComments {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.breveComments:hover {
+    transform: scale(1.2);
+    cursor: pointer;
 }
 
 .breveCarroussel {

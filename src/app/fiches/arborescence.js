@@ -17,8 +17,10 @@ import {
 import AddFolderModal from "./addFolderModal";
 import AddFileModal from "./addFileModal";
 import ConfirmationPopup from "./confirmationPopup";
+import { useData } from "../context/DataContext";
 
 export default function Arborescence({ setSelectedFileForViewing }) {
+  const { userRole } = useData();
   const [folders, setFolders] = useState([]);
   const [error, setError] = useState(null);
   const [expandedFolders, setExpandedFolders] = useState({});
@@ -312,61 +314,68 @@ export default function Arborescence({ setSelectedFileForViewing }) {
     <section className={styles.filesArborescenceSection}>
       <div className={styles.arborescenceHeader}>
         <h2>Fiches d'analyse</h2>
-        <div className={styles.settingsContainer}>
-          <span
-            className="material-symbols-outlined"
-            onClick={() =>
-              setShowSettingsDropdown((prev) => !prev, setAddMode(""))
-            }
-            title="Options d'ajout"
-          >
-            settings
-          </span>
-          {showSettingsDropdown && (
-            <div className={styles.settingsDropdown}>
-              <button
-                onClick={() =>
-                  setAddMode(
-                    addMode === "" || addMode === "file" || addMode === "delete"
-                      ? "folder"
-                      : ""
-                  )
-                }
-                title="Ajouter dossier"
-              >
-                <span className="material-symbols-outlined">add</span> dossiers
-              </button>
-              <button
-                onClick={() =>
-                  setAddMode(
-                    addMode === "" ||
-                      addMode === "folder" ||
-                      addMode === "delete"
-                      ? "file"
-                      : ""
-                  )
-                }
-                title="Ajouter fichier"
-              >
-                <span className="material-symbols-outlined">note_add</span>{" "}
-                fichiers
-              </button>
-              <button
-                onClick={() =>
-                  setAddMode(
-                    addMode === "" || addMode === "folder" || addMode === "file"
-                      ? "delete"
-                      : ""
-                  )
-                }
-                title="Supprimer élément"
-              >
-                <span className="material-symbols-outlined">delete</span>{" "}
-                supprimer
-              </button>
-            </div>
-          )}
-        </div>
+        {userRole === "admin" && (
+          <div className={styles.settingsContainer}>
+            <span
+              className="material-symbols-outlined"
+              onClick={() =>
+                setShowSettingsDropdown((prev) => !prev, setAddMode(""))
+              }
+              title="Options d'ajout"
+            >
+              settings
+            </span>
+            {showSettingsDropdown && (
+              <div className={styles.settingsDropdown}>
+                <button
+                  onClick={() =>
+                    setAddMode(
+                      addMode === "" ||
+                        addMode === "file" ||
+                        addMode === "delete"
+                        ? "folder"
+                        : ""
+                    )
+                  }
+                  title="Ajouter dossier"
+                >
+                  <span className="material-symbols-outlined">add</span>{" "}
+                  dossiers
+                </button>
+                <button
+                  onClick={() =>
+                    setAddMode(
+                      addMode === "" ||
+                        addMode === "folder" ||
+                        addMode === "delete"
+                        ? "file"
+                        : ""
+                    )
+                  }
+                  title="Ajouter fichier"
+                >
+                  <span className="material-symbols-outlined">note_add</span>{" "}
+                  fichiers
+                </button>
+                <button
+                  onClick={() =>
+                    setAddMode(
+                      addMode === "" ||
+                        addMode === "folder" ||
+                        addMode === "file"
+                        ? "delete"
+                        : ""
+                    )
+                  }
+                  title="Supprimer élément"
+                >
+                  <span className="material-symbols-outlined">delete</span>{" "}
+                  supprimer
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.folderTree}>
