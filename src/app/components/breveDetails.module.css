@@ -97,10 +97,16 @@
     gap: 2px;
     font-size: 20px;
     font-weight: bold;
+    border: none;
+    background-color: white;
+    width: 45px;
+    height: 45px;
 }
 .breveComments:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     cursor: pointer;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
 }
 
 .breveCarroussel {

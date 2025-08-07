@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import Styles from "./breveCommentaires.module.css";
+import Styles from "./breveAddCommentaires.module.css";
 import { addCommentForBreve } from "../lib/db";
-import { set } from "ol/transform";
+import { useData } from "../context/DataContext";
 
-export default function BreveCommentaires({ breveId }) {
+export default function BreveAddCommentaires({
+  breveId,
+  setOpenCommentaireSection,
+}) {
+  const { setNeedRefresh } = useData();
   const [comment, setComment] = useState({
     redacteur: "",
     objet: "",
@@ -24,11 +28,20 @@ export default function BreveCommentaires({ breveId }) {
     setComment({ redacteur: "", objet: "", commentaire: "" });
     setMessage("Commentaire ajouté avec succès !");
     setTimeout(() => setMessage(""), 2000);
+    setNeedRefresh((prev) => !prev);
   };
 
   return (
     <div className={Styles.divSectionCommentaires}>
-      <h2>Envoyer un commentaire</h2>
+      <div className={Styles.divCommentaireTitre}>
+        <h2>Envoyer un commentaire</h2>
+        <span
+          className="material-symbols-outlined"
+          onClick={() => setOpenCommentaireSection(false)}
+        >
+          close
+        </span>
+      </div>
       <form onSubmit={handleSubmit}>
         <label htmlFor="redacteur">Email:</label>
         <input

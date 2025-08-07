@@ -17,8 +17,8 @@ import {
 import UpdateBreveSection from "./updateBreve";
 import styles from "./breveDetails.module.css";
 import Image from "next/image";
-import BreveCommentaires from "./breveCommentaires";
-import { set } from "ol/transform";
+import BreveAddCommentaires from "./breveAddCommentaires";
+import BreveListCommentaires from "./breveListCommentaires";
 
 export default function BreveDetails({
   breve,
@@ -37,6 +37,7 @@ export default function BreveDetails({
   const [commentaires, setCommentaires] = useState([]);
   const [openUpdateBreve, setOpenUpdateBreve] = useState(false);
   const [openCommentaireSection, setOpenCommentaireSection] = useState(false);
+  const [openListCommentaires, setOpenListCommentaires] = useState(false);
   const [links, setLinks] = useState([]);
 
   function nextPic() {
@@ -84,7 +85,10 @@ export default function BreveDetails({
           ) : (
             <button
               title="ajouter un commentaire"
-              onClick={() => setOpenCommentaireSection(!openCommentaireSection)}
+              onClick={() => {
+                setOpenCommentaireSection(!openCommentaireSection);
+                setOpenListCommentaires(false);
+              }}
             >
               <span className="material-symbols-outlined">comment</span>
             </button>
@@ -111,10 +115,16 @@ export default function BreveDetails({
             </p>
             <p>{breve.zone}</p>
           </div>
-          <div className={styles.breveComments}>
+          <button
+            className={styles.breveComments}
+            onClick={() => {
+              setOpenListCommentaires(!openListCommentaires);
+              setOpenCommentaireSection(false);
+            }}
+          >
             {commentaires.length}
             <span className="material-symbols-outlined">comment</span>
-          </div>
+          </button>
         </div>
         <div className={styles.breveCarroussel}>
           {pictures.length > 0 ? (
@@ -257,7 +267,18 @@ export default function BreveDetails({
           </div>
         </div>
       )}
-      {openCommentaireSection && <BreveCommentaires breveId={breve.id} />}
+      {openCommentaireSection && (
+        <BreveAddCommentaires
+          breveId={breve.id}
+          setOpenCommentaireSection={setOpenCommentaireSection}
+        />
+      )}
+      {openListCommentaires && (
+        <BreveListCommentaires
+          setOpenListCommentaires={setOpenListCommentaires}
+          commentaires={commentaires}
+        />
+      )}
     </div>
   );
 }
