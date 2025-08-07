@@ -630,6 +630,29 @@ export async function getAllFiles() {
   }
 }
 
+export async function getAllFilesMeta() {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/arborescence/files-meta",
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des métadonnées des fichiers :",
+      error.message
+    );
+    throw error;
+  }
+}
+
 export async function getOneFile(fileId) {
   try {
     const response = await fetch(

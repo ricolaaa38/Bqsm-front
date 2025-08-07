@@ -13,7 +13,7 @@ import {
   deleteIntervenant,
   deletePicture,
   deleteLink,
-  getAllFiles,
+  getAllFilesMeta,
 } from "../lib/db";
 import {
   getIconByContributeur,
@@ -181,7 +181,7 @@ export default function UpdateBreveSection({
 
   useEffect(() => {
     if (linkType === "file") {
-      getAllFiles().then(setFilesListe);
+      getAllFilesMeta().then(setFilesListe);
     }
   }, [linkType]);
 
@@ -462,6 +462,14 @@ export default function UpdateBreveSection({
               )}
             </div>
           ))}
+        <div style={{ height: "20px", gridColumn: "1 / -1" }}></div>
+        {previousPictures.length > 3 && (
+          <span
+            className={`${styles.morePictureIcon} material-symbols-outlined`}
+          >
+            keyboard_double_arrow_down
+          </span>
+        )}
       </div>
       <h4>Intervenants :</h4>
       <div className={styles.updateIntervenants}>

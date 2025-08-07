@@ -134,6 +134,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 5px;
     overflow-y: auto;
+    position: relative;
 }
 
 .pictureCard {
@@ -195,6 +196,21 @@
 
 .closeAddNewPictureFormBtn:hover span {
   transform: scale(1.2);
+}
+.updateBrevePictures .morePictureIcon {
+  position: sticky;
+  bottom: 0;
+  left: 25%;
+  transform: scale(1.2);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5em;
+  z-index: 10;
+  background: none;
+  pointer-events: none;
+  text-shadow: 0 0 6px #000, 0 0 3px #fff;
 }
 
 .updateIntervenants, .updateContributeurs {
