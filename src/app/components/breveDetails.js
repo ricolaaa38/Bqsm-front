@@ -8,12 +8,9 @@ import {
   getPicturesByBreveId,
   getAllLinksByBreveId,
   getCommentsByBreveId,
+  getBreveAssociateIcons,
 } from "../lib/db";
-import {
-  getIconByCategorie,
-  getIconByIntervenant,
-  getIconByContributeur,
-} from "../lib/iconSelector";
+import { getIconByCategorie } from "../lib/iconSelector";
 import UpdateBreveSection from "./updateBreve";
 import styles from "./breveDetails.module.css";
 import Image from "next/image";
@@ -39,6 +36,24 @@ export default function BreveDetails({
   const [openCommentaireSection, setOpenCommentaireSection] = useState(false);
   const [openListCommentaires, setOpenListCommentaires] = useState(false);
   const [links, setLinks] = useState([]);
+  const [associatedIcons, setAssociatedIcons] = useState([]);
+
+  useEffect(() => {
+    async function fetchIcons() {
+      try {
+        const icons = await getBreveAssociateIcons(breve.id);
+        setAssociatedIcons(icons);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des icônes associées :",
+          error
+        );
+      }
+    }
+    fetchIcons();
+  }, [breve.id, needRefresh]);
+
+  console.log("associatedIcons", associatedIcons);
 
   function nextPic() {
     setCurrent((c) => (c < pictures.length - 1 ? c + 1 : 0));
@@ -201,21 +216,23 @@ export default function BreveDetails({
         <div className={styles.breveIntervenantsBody}>
           <h3>Intervenants</h3>
           <div className={styles.breveIntervenants}>
-            {intervenants.length > 0 ? (
-              intervenants.map((item, index) => (
-                <p
-                  className={styles.intervenantLogo}
-                  key={item.name + item.id + index}
-                >
-                  <Image
-                    src={getIconByIntervenant(item.name)}
-                    alt={item.name}
-                    title={item.name}
-                    width={90}
-                    height={90}
-                  />
-                </p>
-              ))
+            {associatedIcons.length > 0 ? (
+              associatedIcons
+                .filter((item) => item.intervenantId !== null)
+                .map((item, index) => (
+                  <p
+                    className={styles.intervenantLogo}
+                    key={item.intervenantId + item.id + index}
+                  >
+                    <img
+                      src={`data:image/png;base64,${item.iconId.icon}`}
+                      alt={item.iconId.iconName}
+                      title={item.iconId.iconName}
+                      width={90}
+                      height={90}
+                    />
+                  </p>
+                ))
             ) : (
               <p>Veuillez ajouter des intervenants !</p>
             )}
@@ -224,21 +241,23 @@ export default function BreveDetails({
         <div className={styles.breveContributeursBody}>
           <h3>Contributeurs</h3>
           <div className={styles.breveContributeurs}>
-            {contributeurs.length > 0 ? (
-              contributeurs.map((item, index) => (
-                <p
-                  className={styles.contributeurLogo}
-                  key={item.name + item.id + index}
-                >
-                  <Image
-                    src={getIconByContributeur(item.name)}
-                    alt={item.name}
-                    title={item.name}
-                    width={90}
-                    height={90}
-                  />
-                </p>
-              ))
+            {associatedIcons.length > 0 ? (
+              associatedIcons
+                .filter((item) => item.contributeurId !== null)
+                .map((item, index) => (
+                  <p
+                    className={styles.contributeurLogo}
+                    key={item.contributeurId + item.id + index}
+                  >
+                    <img
+                      src={`data:image/png;base64,${item.iconId.icon}`}
+                      alt={item.iconId.iconName}
+                      title={item.iconId.iconName}
+                      width={90}
+                      height={90}
+                    />
+                  </p>
+                ))
             ) : (
               <p>Veuillez ajouter des contributeurs !</p>
             )}
@@ -260,9 +279,8 @@ export default function BreveDetails({
             <UpdateBreveSection
               brevePreviousInfo={breve}
               previousPictures={pictures}
-              previousIntervenants={intervenants}
-              previousContributeurs={contributeurs}
               previousLinks={links}
+              associatedIcons={associatedIcons}
             />
           </div>
         </div>

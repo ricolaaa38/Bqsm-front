@@ -12,7 +12,7 @@ export default function BrevesGestionButtons() {
   const [isOpen, setIsOpen] = useState(false);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null);
-  const { brevesForExport, userRole } = useData();
+  const { brevesForExport, userRole, setNeedRefresh } = useData();
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -49,6 +49,7 @@ export default function BrevesGestionButtons() {
     try {
       const data = await addNewBrevesFromFile(file);
       setMessage(data);
+      setNeedRefresh((prev) => !prev);
       setTimeout(() => {
         setMessage("");
         setIsOpen(false);

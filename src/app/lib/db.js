@@ -296,6 +296,7 @@ export async function addIntervenantForBreve(id, name) {
       );
       return null;
     }
+    return await response.json();
   } catch (error) {
     console.error("Erreur réseau lors de l'ajout de l'intervenant: ", error);
     return null;
@@ -356,6 +357,7 @@ export async function addContributeurForBreve(id, name) {
       );
       return null;
     }
+    return await response.json();
   } catch (error) {
     console.error("Erreur réseau lors de l'ajout du contributeur: ", error);
     return null;
@@ -824,6 +826,148 @@ export async function deleteComment(id) {
   } catch (error) {
     console.error(
       "Erreur lors de la suppression du commentaire :",
+      error.message
+    );
+    throw error;
+  }
+}
+
+export async function getAllIcons() {
+  try {
+    const response = await fetch("http://localhost:8080/api/icons/", {
+      method: "GET",
+    });
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Erreur lors de la récupération des icônes :", error.message);
+    throw error;
+  }
+}
+
+export async function getIconById(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/icons/get-one?id=${id}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'icône :", error.message);
+    throw error;
+  }
+}
+
+export async function addIcon(icon) {
+  try {
+    const response = await fetch("http://localhost:8080/api/icons/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(icon),
+    });
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'icône :", error.message);
+    throw error;
+  }
+}
+
+export async function deleteIcon(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/icons/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.text();
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'icône :", error.message);
+    throw error;
+  }
+}
+
+export async function getBreveAssociateIcons(breveId) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/icons-by-breve/list?breveId=${breveId}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des icônes associées :",
+      error.message
+    );
+    throw error;
+  }
+}
+
+export async function addBreveIconAssociation({
+  breveId,
+  iconId,
+  intervenantId = null,
+  contributeurId = null,
+}) {
+  const params = new URLSearchParams({
+    breveId,
+    iconId,
+  });
+  if (intervenantId) params.append("intervenantId", intervenantId);
+  if (contributeurId) params.append("contributeurId", contributeurId);
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/icons-by-breve/create?${params.toString()}`,
+      {
+        method: "POST",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'association :", error.message);
+    throw error;
+  }
+}
+
+export async function deleteBreveIconAssociation(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/icons-by-breve/delete?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+    return await response.text();
+  } catch (error) {
+    console.error(
+      "Erreur lors de la suppression de l'association :",
       error.message
     );
     throw error;

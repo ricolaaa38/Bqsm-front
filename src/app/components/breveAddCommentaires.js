@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Styles from "./breveAddCommentaires.module.css";
 import { addCommentForBreve } from "../lib/db";
 import { useData } from "../context/DataContext";
+import useClickOutside from "../hook/useClickOutside";
 
 export default function BreveAddCommentaires({
   breveId,
@@ -16,6 +17,9 @@ export default function BreveAddCommentaires({
     commentaire: "",
   });
   const [message, setMessage] = useState("");
+  const sectionRef = useRef(null);
+
+  useClickOutside(sectionRef, () => setOpenCommentaireSection(false));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +36,7 @@ export default function BreveAddCommentaires({
   };
 
   return (
-    <div className={Styles.divSectionCommentaires}>
+    <div className={Styles.divSectionCommentaires} ref={sectionRef}>
       <div className={Styles.divCommentaireTitre}>
         <h2>Envoyer un commentaire</h2>
         <span

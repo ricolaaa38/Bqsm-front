@@ -3,12 +3,17 @@
 import Styles from "./breveListCommentaires.module.css";
 import { useData } from "../context/DataContext";
 import { deleteComment } from "../lib/db";
+import { useRef } from "react";
+import useClickOutside from "../hook/useClickOutside";
 
 export default function BreveListCommentaires({
   setOpenListCommentaires,
   commentaires,
 }) {
   const { setNeedRefresh, userRole } = useData();
+  const sectionRef = useRef(null);
+
+  useClickOutside(sectionRef, () => setOpenListCommentaires(false));
 
   const handleDeleteComment = async (commentId) => {
     await deleteComment(commentId);
@@ -16,7 +21,7 @@ export default function BreveListCommentaires({
   };
 
   return (
-    <section className={Styles.sectionBreveListCommentaires}>
+    <section className={Styles.sectionBreveListCommentaires} ref={sectionRef}>
       <div className={Styles.divCommentaireTitre}>
         <h2>Commentaires :</h2>
         <span

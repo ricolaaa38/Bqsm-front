@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useData } from "../context/DataContext";
 import {
@@ -14,24 +13,21 @@ import {
   deletePicture,
   deleteLink,
   getAllFilesMeta,
+  getBreveAssociateIcons,
+  addBreveIconAssociation,
+  getAllIcons,
 } from "../lib/db";
-import {
-  getIconByContributeur,
-  getIconByIntervenant,
-} from "../lib/iconSelector";
 import styles from "./updateBreve.module.css";
-import Image from "next/image";
 import { getNames } from "country-list";
 
 export default function UpdateBreveSection({
   brevePreviousInfo,
   previousPictures,
-  previousIntervenants,
-  previousContributeurs,
   previousLinks,
+  associatedIcons,
 }) {
   const countryNames = getNames();
-  const { setNeedRefresh, filters } = useData();
+  const { setNeedRefresh, filters, needRefresh } = useData();
   const [showAddNewLinkForm, setShowAddNewLinkForm] = useState(false);
   const [showAddNewPictureForm, setShowAddNewPictureForm] = useState(false);
   const [showAddNewIntervenantForm, setShowAddNewIntervenantForm] =
@@ -48,13 +44,12 @@ export default function UpdateBreveSection({
   const [linkType, setLinkType] = useState("url");
   const [selectFileId, setSelectedFileId] = useState("");
   const [filesList, setFilesListe] = useState([]);
-
   const [imageFile, setImageFile] = useState(null);
   const [imageFileName, setImageFileName] = useState("");
   const [intervenantName, setIntervenantName] = useState("");
   const [contributeurName, setContributeurName] = useState("");
   const [breveInfo, setBreveInfo] = useState({
-    bqsmNumb: brevePreviousInfo.bqsmNumb,
+    bqsmNumb: brevePreviousInfo.bqsmNumb.slice(0, 10),
     categorie: brevePreviousInfo.categorie,
     contenu: brevePreviousInfo.contenu,
     date: brevePreviousInfo.date.slice(0, 10),
@@ -136,7 +131,22 @@ export default function UpdateBreveSection({
       return;
     }
     try {
-      await addIntervenantForBreve(brevePreviousInfo.id, intervenantName);
+      const nouvelIntervenant = await addIntervenantForBreve(
+        brevePreviousInfo.id,
+        intervenantName
+      );
+      const nouvelIntervenantId = nouvelIntervenant.id;
+      const allIcons = await getAllIcons();
+      const icon = allIcons.find(
+        (icon) => icon.iconName.toLowerCase() === intervenantName.toLowerCase()
+      );
+      if (icon && nouvelIntervenantId) {
+        await addBreveIconAssociation({
+          breveId: brevePreviousInfo.id,
+          iconId: icon.id,
+          intervenantId: nouvelIntervenantId,
+        });
+      }
       setNeedRefresh((prev) => !prev);
     } catch (error) {
       console.error("Erreur lors de l'ajout de l'intervenant :", error);
@@ -163,7 +173,23 @@ export default function UpdateBreveSection({
       return;
     }
     try {
-      await addContributeurForBreve(brevePreviousInfo.id, contributeurName);
+      const nouvelContributeur = await addContributeurForBreve(
+        brevePreviousInfo.id,
+        contributeurName
+      );
+
+      const nouvelContributeurId = nouvelContributeur.id;
+      const allIcons = await getAllIcons();
+      const icon = allIcons.find(
+        (icon) => icon.iconName.toLowerCase() === contributeurName.toLowerCase()
+      );
+      if (icon && nouvelContributeurId) {
+        await addBreveIconAssociation({
+          breveId: brevePreviousInfo.id,
+          iconId: icon.id,
+          contributeurId: nouvelContributeurId,
+        });
+      }
       setNeedRefresh((prev) => !prev);
     } catch (error) {
       console.error("Erreur lors de l'ajout du contributeur :", error);
@@ -230,7 +256,7 @@ export default function UpdateBreveSection({
           <div>
             <label htmlFor="bqsmNumb">BQSM-num</label>
             <input
-              type="text"
+              type="date"
               name="bqsmNumb"
               value={breveInfo.bqsmNumb}
               onChange={handleChange}
@@ -515,25 +541,26 @@ export default function UpdateBreveSection({
             </form>
           </div>
         )}
-        {previousIntervenants.length > 0 &&
-          previousIntervenants.map((item, index) => (
+        {associatedIcons
+          .filter((icon) => icon.intervenantId !== null)
+          .map((icon) => (
             <div
               className={`${styles.intervenantCard} ${styles.intervenantLogo}`}
-              key={item.name + item.id + index}
-              onMouseEnter={() => setHoveredIntervenant(item.id)}
+              key={icon.id}
+              onMouseEnter={() => setHoveredIntervenant(icon.id)}
               onMouseLeave={() => setHoveredIntervenant(null)}
             >
-              <Image
-                src={getIconByIntervenant(item.name)}
-                alt={item.name}
-                title={item.name}
+              <img
+                src={`data:image/png;base64,${icon.iconId.icon}`}
+                alt={icon.iconId.iconName}
+                title={icon.iconId.iconName}
                 width={90}
                 height={90}
               />
-              {hoveredIntervenant === item.id && (
+              {hoveredIntervenant === icon.id && (
                 <button
                   className={styles.deleteIntervenantBtn}
-                  onClick={() => handleDeleteIntervenant(item.id)}
+                  onClick={() => handleDeleteIntervenant(icon.intervenantId.id)}
                   title="Supprimer l'intervenant"
                 >
                   <span className="material-symbols-outlined">delete</span>
@@ -586,25 +613,28 @@ export default function UpdateBreveSection({
             </form>
           </div>
         )}
-        {previousContributeurs.length > 0 &&
-          previousContributeurs.map((item, index) => (
+        {associatedIcons
+          .filter((icon) => icon.contributeurId !== null)
+          .map((icon) => (
             <div
               className={`${styles.contributeurCard} ${styles.contributeurLogo}`}
-              key={item.name + item.id + index}
-              onMouseEnter={() => setHoveredContributeur(item.id)}
+              key={icon.id}
+              onMouseEnter={() => setHoveredContributeur(icon.id)}
               onMouseLeave={() => setHoveredContributeur(null)}
             >
-              <Image
-                src={getIconByContributeur(item.name)}
-                alt={item.name}
-                title={item.name}
+              <img
+                src={`data:image/png;base64,${icon.iconId.icon}`}
+                alt={icon.iconId.iconName}
+                title={icon.iconId.iconName}
                 width={90}
                 height={90}
               />
-              {hoveredContributeur === item.id && (
+              {hoveredContributeur === icon.id && (
                 <button
                   className={styles.deleteContributeurBtn}
-                  onClick={() => handleDeleteContributeur(item.id)}
+                  onClick={() =>
+                    handleDeleteContributeur(icon.contributeurId.id)
+                  }
                   title="Supprimer le contributeur"
                 >
                   <span className="material-symbols-outlined">delete</span>
